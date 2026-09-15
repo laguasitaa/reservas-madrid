@@ -16,9 +16,11 @@ function formatAmount(n: number) {
 export default function SummaryView({
   apartments,
   reservations,
+  onSelectReservation,
 }: {
   apartments: Apartment[];
   reservations: Reservation[];
+  onSelectReservation: (reservation: Reservation) => void;
 }) {
   const byApartment = useMemo(() => {
     return apartments.map((a) => {
@@ -79,7 +81,12 @@ export default function SummaryView({
             </div>
           ) : (
             allReservations.map((r) => (
-              <div key={r.id} className="list-row">
+              <button
+                key={r.id}
+                type="button"
+                className="list-row text-left w-full"
+                onClick={() => onSelectReservation(r)}
+              >
                 <div className="list-row-main">
                   <span className="list-row-title">
                     <span
@@ -96,7 +103,7 @@ export default function SummaryView({
                 <span className="num text-sm">
                   {r.amount != null ? formatAmount(r.amount) : "—"}
                 </span>
-              </div>
+              </button>
             ))
           )}
         </div>

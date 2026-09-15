@@ -39,7 +39,9 @@ export default function HomeClient({
   const [selectedApartmentId, setSelectedApartmentId] = useState(
     apartments[0]?.id ?? ""
   );
-  const [sheetOpen, setSheetOpen] = useState(false);
+  const [sheet, setSheet] = useState<
+    { mode: "create" } | { mode: "edit"; reservation: Reservation } | null
+  >(null);
 
   const today = new Date();
   const [calYear, setCalYear] = useState(today.getFullYear());
@@ -172,7 +174,12 @@ export default function HomeClient({
                   </div>
                 ) : (
                   dayReservations.map((r) => (
-                    <div key={r.id} className="list-row">
+                    <button
+                      key={r.id}
+                      type="button"
+                      className="list-row text-left w-full"
+                      onClick={() => setSheet({ mode: "edit", reservation: r })}
+                    >
                       <div className="list-row-main">
                         <span className="list-row-title">
                           <span
@@ -189,14 +196,18 @@ export default function HomeClient({
                             : ""}
                         </span>
                       </div>
-                    </div>
+                    </button>
                   ))
                 )}
               </div>
             ) : null}
           </>
         ) : view === "summary" ? (
-          <SummaryView apartments={apartments} reservations={reservations} />
+          <SummaryView
+            apartments={apartments}
+            reservations={reservations}
+            onSelectReservation={(r) => setSheet({ mode: "edit", reservation: r })}
+          />
         ) : (
           <>
             <div className="tabs" role="tablist">
@@ -243,7 +254,12 @@ export default function HomeClient({
                 </div>
               ) : (
                 apartmentReservations.map((r) => (
-                  <div key={r.id} className="list-row">
+                  <button
+                    key={r.id}
+                    type="button"
+                    className="list-row text-left w-full"
+                    onClick={() => setSheet({ mode: "edit", reservation: r })}
+                  >
                     <div className="list-row-main">
                       <span className="list-row-title">
                         {formatDate(r.start_date)} — {formatDate(r.end_date)}
@@ -253,7 +269,7 @@ export default function HomeClient({
                         {r.amount != null ? formatAmount(r.amount) : "Sin monto"}
                       </span>
                     </div>
-                  </div>
+                  </button>
                 ))
               )}
             </div>
@@ -265,20 +281,25 @@ export default function HomeClient({
         type="button"
         className="btn-primary fixed bottom-20 right-4 md:bottom-6 rounded-full w-14 h-14 grid place-items-center shadow-lg"
         aria-label="Nueva reserva"
-        onClick={() => setSheetOpen(true)}
+        onClick={() => setSheet({ mode: "create" })}
         disabled={apartments.length === 0}
       >
         <Plus className="icon" />
       </button>
 
-      {sheetOpen ? (
+      {sheet ? (
         <NewReservationSheet
           apartments={apartments}
+          editing={sheet.mode === "edit" ? sheet.reservation : undefined}
           defaultApartmentId={
-            view === "agenda" ? selectedApartment?.id : undefined
+            sheet.mode === "create" && view === "agenda"
+              ? selectedApartment?.id
+              : undefined
           }
-          defaultDate={view === "calendar" ? selectedDate : null}
-          onClose={() => setSheetOpen(false)}
+          defaultDate={
+            sheet.mode === "create" && view === "calendar" ? selectedDate : null
+          }
+          onClose={() => setSheet(null)}
         />
       ) : null}
     </div>

@@ -1,9 +1,15 @@
 "use client";
 
 import { useActionState, useEffect, useState } from "react";
-import { X } from "lucide-react";
-import { createReservation, type ReservationState } from "./reservations/actions";
+import { X, Trash2 } from "lucide-react";
+import {
+  createReservation,
+  updateReservation,
+  deleteReservation,
+  type ReservationState,
+} from "./reservations/actions";
 import type { Apartment } from "@/lib/apartments";
+import type { Reservation } from "./HomeClient";
 
 const initialState: ReservationState = { error: null };
 
@@ -11,19 +17,25 @@ export default function NewReservationSheet({
   apartments,
   defaultApartmentId,
   defaultDate,
+  editing,
   onClose,
 }: {
   apartments: Apartment[];
   defaultApartmentId?: string;
   defaultDate?: string | null;
+  editing?: Reservation;
   onClose: () => void;
 }) {
-  const [state, formAction, pending] = useActionState(
-    createReservation,
-    initialState
-  );
+  const isEditing = Boolean(editing);
+  const action = isEditing ? updateReservation : createReservation;
+  const [state, formAction, pending] = useActionState(action, initialState);
   const [apartmentId, setApartmentId] = useState(
-    defaultApartmentId ?? apartments[0]?.id ?? ""
+    editing?.apartment_id ?? defaultApartmentId ?? apartments[0]?.id ?? ""
+  );
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [deleteState, deleteAction, deletePending] = useActionState(
+    deleteReservation,
+    initialState
   );
 
   useEffect(() => {
@@ -32,12 +44,20 @@ export default function NewReservationSheet({
     }
   }, [state.ok, onClose]);
 
+  useEffect(() => {
+    if (deleteState.ok) {
+      onClose();
+    }
+  }, [deleteState.ok, onClose]);
+
   return (
     <div className="overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="sheet-handle" />
         <div className="flex items-center justify-between">
-          <h2 className="font-display text-lg">Nueva reserva</h2>
+          <h2 className="font-display text-lg">
+            {isEditing ? "Editar reserva" : "Nueva reserva"}
+          </h2>
           <button
             type="button"
             className="icon-btn"
@@ -50,6 +70,10 @@ export default function NewReservationSheet({
         </div>
 
         <form action={formAction} className="flex flex-col gap-3">
+          {isEditing ? (
+            <input type="hidden" name="reservation_id" value={editing!.id} />
+          ) : null}
+
           <div className="flex flex-col gap-1">
             <label className="label-default" htmlFor="apartment_id">
               Apartamento
@@ -79,6 +103,7 @@ export default function NewReservationSheet({
               name="guest_name"
               type="text"
               maxLength={120}
+              defaultValue={editing?.guest_name ?? ""}
               className="input-default"
               placeholder="Nombre del huésped"
             />
@@ -94,7 +119,7 @@ export default function NewReservationSheet({
                 name="start_date"
                 type="date"
                 required
-                defaultValue={defaultDate ?? undefined}
+                defaultValue={editing?.start_date ?? defaultDate ?? undefined}
                 className="input-default"
               />
             </div>
@@ -107,6 +132,7 @@ export default function NewReservationSheet({
                 name="end_date"
                 type="date"
                 required
+                defaultValue={editing?.end_date ?? undefined}
                 className="input-default"
               />
             </div>
@@ -123,6 +149,7 @@ export default function NewReservationSheet({
               step="0.01"
               min="0"
               inputMode="decimal"
+              defaultValue={editing?.amount ?? ""}
               className="input-default"
               placeholder="0.00"
             />
@@ -131,6 +158,15 @@ export default function NewReservationSheet({
           {state.error ? <p className="error-text">{state.error}</p> : null}
 
           <div className="modal-actions">
+            {isEditing && !confirmingDelete ? (
+              <button
+                type="button"
+                className="btn-danger"
+                onClick={() => setConfirmingDelete(true)}
+              >
+                <Trash2 className="icon" style={{ width: 16, height: 16 }} />
+              </button>
+            ) : null}
             <button type="button" className="btn-secondary" onClick={onClose}>
               Cancelar
             </button>
@@ -144,6 +180,38 @@ export default function NewReservationSheet({
             </button>
           </div>
         </form>
+
+        {isEditing && confirmingDelete ? (
+          <form
+            action={deleteAction}
+            className="flex flex-col gap-2 pt-2 border-t border-default"
+          >
+            <input type="hidden" name="reservation_id" value={editing!.id} />
+            <p className="error-text">
+              ¿Eliminar esta reserva? No se puede deshacer.
+            </p>
+            {deleteState.error ? (
+              <p className="error-text">{deleteState.error}</p>
+            ) : null}
+            <div className="modal-actions">
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={() => setConfirmingDelete(false)}
+              >
+                No, cancelar
+              </button>
+              <button
+                type="submit"
+                className="btn-danger"
+                disabled={deletePending}
+                data-loading={deletePending}
+              >
+                {deletePending ? "Eliminando…" : "Sí, eliminar"}
+              </button>
+            </div>
+          </form>
+        ) : null}
       </div>
     </div>
   );
