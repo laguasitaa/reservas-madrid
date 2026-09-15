@@ -28,17 +28,18 @@ function startWeekday(year: number, monthIndex: number) {
   return (jsDay + 6) % 7;
 }
 
-function apartmentsOnDate(
+function reservationsOnDate(
   date: string,
   apartments: Apartment[],
   reservations: Reservation[]
 ) {
-  const occupied = new Set(
-    reservations
-      .filter((r) => r.start_date <= date && date < r.end_date)
-      .map((r) => r.apartment_id)
-  );
-  return apartments.filter((a) => occupied.has(a.id));
+  return reservations
+    .filter((r) => r.start_date <= date && date < r.end_date)
+    .map((r) => ({
+      ...r,
+      apartment: apartments.find((a) => a.id === r.apartment_id),
+    }))
+    .filter((r) => r.apartment);
 }
 
 export default function MonthCalendar({
@@ -123,7 +124,11 @@ export default function MonthCalendar({
             );
           }
           const iso = toISODate(year, monthIndex, day);
-          const occupiedApts = apartmentsOnDate(iso, apartments, reservations);
+          const dayReservations = reservationsOnDate(
+            iso,
+            apartments,
+            reservations
+          );
           const isSelected = iso === selectedDate;
           const isToday = iso === todayISO;
 
@@ -132,7 +137,7 @@ export default function MonthCalendar({
               key={iso}
               type="button"
               onClick={() => onSelectDate(iso)}
-              className="relative flex flex-col items-stretch border-r border-b border-default min-h-14 sm:min-h-16 p-1 gap-1 text-left transition-colors"
+              className="relative flex flex-col items-stretch border-r border-b border-default min-h-16 sm:min-h-20 p-1 gap-0.5 text-left transition-colors"
               style={{
                 backgroundColor: isSelected
                   ? "var(--c-accent-ring)"
@@ -150,16 +155,21 @@ export default function MonthCalendar({
                 {day}
               </span>
               <span className="flex flex-col gap-0.5">
-                {occupiedApts.slice(0, 3).map((a) => (
+                {dayReservations.slice(0, 3).map((r) => (
                   <span
-                    key={a.id}
-                    className="h-1.5 rounded-sm"
-                    style={{ backgroundColor: a.color }}
-                  />
+                    key={r.id}
+                    className="rounded-sm px-0.5 leading-tight text-[9px] font-medium truncate"
+                    style={{
+                      backgroundColor: r.apartment!.color,
+                      color: "var(--c-on-accent)",
+                    }}
+                  >
+                    {r.guest_name ?? r.apartment!.name}
+                  </span>
                 ))}
-                {occupiedApts.length > 3 ? (
-                  <span className="text-[10px] text-muted leading-none">
-                    +{occupiedApts.length - 3}
+                {dayReservations.length > 3 ? (
+                  <span className="text-[9px] text-muted leading-none">
+                    +{dayReservations.length - 3}
                   </span>
                 ) : null}
               </span>
