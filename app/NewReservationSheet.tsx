@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { createReservation, type ReservationState } from "./reservations/actions";
 import type { Apartment } from "@/lib/apartments";
@@ -8,15 +8,22 @@ import type { Apartment } from "@/lib/apartments";
 const initialState: ReservationState = { error: null };
 
 export default function NewReservationSheet({
-  apartment,
+  apartments,
+  defaultApartmentId,
+  defaultDate,
   onClose,
 }: {
-  apartment: Apartment;
+  apartments: Apartment[];
+  defaultApartmentId?: string;
+  defaultDate?: string | null;
   onClose: () => void;
 }) {
   const [state, formAction, pending] = useActionState(
     createReservation,
     initialState
+  );
+  const [apartmentId, setApartmentId] = useState(
+    defaultApartmentId ?? apartments[0]?.id ?? ""
   );
 
   useEffect(() => {
@@ -42,16 +49,26 @@ export default function NewReservationSheet({
           </button>
         </div>
 
-        <p className="text-muted text-sm">
-          <span
-            className="inline-block w-2.5 h-2.5 rounded-full mr-2 align-middle"
-            style={{ backgroundColor: apartment.color }}
-          />
-          {apartment.name}
-        </p>
-
         <form action={formAction} className="flex flex-col gap-3">
-          <input type="hidden" name="apartment_id" value={apartment.id} />
+          <div className="flex flex-col gap-1">
+            <label className="label-default" htmlFor="apartment_id">
+              Apartamento
+            </label>
+            <select
+              id="apartment_id"
+              name="apartment_id"
+              required
+              className="input-default"
+              value={apartmentId}
+              onChange={(e) => setApartmentId(e.target.value)}
+            >
+              {apartments.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <div className="flex gap-3">
             <div className="flex flex-col gap-1 flex-1">
@@ -63,6 +80,7 @@ export default function NewReservationSheet({
                 name="start_date"
                 type="date"
                 required
+                defaultValue={defaultDate ?? undefined}
                 className="input-default"
               />
             </div>
