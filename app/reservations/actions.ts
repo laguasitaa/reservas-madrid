@@ -15,6 +15,7 @@ export async function createReservation(
   const startDate = String(formData.get("start_date") ?? "");
   const endDate = String(formData.get("end_date") ?? "");
   const amountRaw = String(formData.get("amount") ?? "");
+  const guestNameRaw = String(formData.get("guest_name") ?? "").trim();
 
   if (!apartmentId || !startDate || !endDate) {
     return { error: "Faltan datos — revisa el apartamento y las fechas." };
@@ -45,6 +46,7 @@ export async function createReservation(
     start_date: startDate,
     end_date: endDate,
     amount,
+    guest_name: guestNameRaw === "" ? null : guestNameRaw,
   });
 
   if (error) {

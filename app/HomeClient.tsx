@@ -13,6 +13,7 @@ export type Reservation = {
   start_date: string;
   end_date: string;
   amount: number | null;
+  guest_name: string | null;
 };
 
 function formatDate(iso: string) {
@@ -168,6 +169,7 @@ export default function HomeClient({
                             style={{ backgroundColor: r.apartment?.color }}
                           />
                           {r.apartment?.name}
+                          {r.guest_name ? ` — ${r.guest_name}` : ""}
                         </span>
                         <span className="list-row-meta">
                           {formatDate(r.start_date)} — {formatDate(r.end_date)}
@@ -232,6 +234,7 @@ export default function HomeClient({
                     <div className="list-row-main">
                       <span className="list-row-title">
                         {formatDate(r.start_date)} — {formatDate(r.end_date)}
+                        {r.guest_name ? ` — ${r.guest_name}` : ""}
                       </span>
                       <span className="list-row-meta">
                         {r.amount != null ? formatAmount(r.amount) : "Sin monto"}

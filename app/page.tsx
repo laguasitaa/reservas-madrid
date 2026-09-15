@@ -18,7 +18,7 @@ export default async function Home() {
 
   const { data: reservations } = await supabase
     .from("reservations")
-    .select("id, apartment_id, start_date, end_date, amount")
+    .select("id, apartment_id, start_date, end_date, amount, guest_name")
     .order("start_date", { ascending: true });
 
   return (

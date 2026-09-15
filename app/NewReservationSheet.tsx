@@ -70,6 +70,20 @@ export default function NewReservationSheet({
             </select>
           </div>
 
+          <div className="flex flex-col gap-1">
+            <label className="label-default" htmlFor="guest_name">
+              Huésped (opcional)
+            </label>
+            <input
+              id="guest_name"
+              name="guest_name"
+              type="text"
+              maxLength={120}
+              className="input-default"
+              placeholder="Nombre del huésped"
+            />
+          </div>
+
           <div className="flex gap-3">
             <div className="flex flex-col gap-1 flex-1">
               <label className="label-default" htmlFor="start_date">

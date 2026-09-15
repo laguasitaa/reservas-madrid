@@ -119,23 +119,32 @@ export default function MonthCalendar({
               key={iso}
               type="button"
               onClick={() => onSelectDate(iso)}
-              className="flex flex-col items-center gap-1 rounded-md py-1.5 min-h-11 transition-colors"
+              className="relative flex flex-col items-center justify-center rounded-md min-h-11 overflow-hidden transition-colors"
               style={{
-                backgroundColor: isSelected
-                  ? "var(--c-accent-ring)"
-                  : "transparent",
-                outline: isToday ? "1px solid var(--c-accent)" : "none",
+                outline: isToday ? "2px solid var(--c-accent)" : "none",
+                outlineOffset: -1,
               }}
             >
-              <span className="text-sm num">{day}</span>
-              <span className="flex gap-0.5 h-1.5">
-                {occupiedApts.slice(0, 4).map((a) => (
-                  <span
-                    key={a.id}
-                    className="w-1.5 h-1.5 rounded-full"
-                    style={{ backgroundColor: a.color }}
-                  />
-                ))}
+              {occupiedApts.length > 0 ? (
+                <span className="absolute inset-0.5 rounded-sm flex overflow-hidden">
+                  {occupiedApts.slice(0, 4).map((a) => (
+                    <span
+                      key={a.id}
+                      className="flex-1 h-full"
+                      style={{ backgroundColor: a.color, opacity: 0.32 }}
+                    />
+                  ))}
+                </span>
+              ) : null}
+              <span
+                className="relative z-10 text-sm num rounded-full px-1.5"
+                style={{
+                  backgroundColor: isSelected
+                    ? "var(--c-accent-ring)"
+                    : "transparent",
+                }}
+              >
+                {day}
               </span>
             </button>
           );
