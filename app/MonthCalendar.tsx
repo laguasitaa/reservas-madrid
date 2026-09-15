@@ -100,15 +100,28 @@ export default function MonthCalendar({
         </button>
       </div>
 
-      <div className="grid grid-cols-7 gap-1 text-center">
+      <div
+        className="grid grid-cols-7 border-t border-l border-default rounded-md overflow-hidden"
+        style={{ borderColor: "var(--c-border)" }}
+      >
         {WEEKDAYS.map((d) => (
-          <span key={d} className="text-muted text-xs font-medium py-1">
+          <span
+            key={d}
+            className="text-muted text-xs font-medium text-center py-1.5 border-r border-b border-default bg-app"
+          >
             {d}
           </span>
         ))}
 
         {cells.map((day, i) => {
-          if (day === null) return <span key={`empty-${i}`} />;
+          if (day === null) {
+            return (
+              <span
+                key={`empty-${i}`}
+                className="border-r border-b border-default bg-app min-h-14 sm:min-h-16"
+              />
+            );
+          }
           const iso = toISODate(year, monthIndex, day);
           const occupiedApts = apartmentsOnDate(iso, apartments, reservations);
           const isSelected = iso === selectedDate;
@@ -119,32 +132,36 @@ export default function MonthCalendar({
               key={iso}
               type="button"
               onClick={() => onSelectDate(iso)}
-              className="relative flex flex-col items-center justify-center rounded-md min-h-11 overflow-hidden transition-colors"
+              className="relative flex flex-col items-stretch border-r border-b border-default min-h-14 sm:min-h-16 p-1 gap-1 text-left transition-colors"
               style={{
-                outline: isToday ? "2px solid var(--c-accent)" : "none",
-                outlineOffset: -1,
+                backgroundColor: isSelected
+                  ? "var(--c-accent-ring)"
+                  : "var(--c-surface)",
               }}
             >
-              {occupiedApts.length > 0 ? (
-                <span className="absolute inset-0.5 rounded-sm flex overflow-hidden">
-                  {occupiedApts.slice(0, 4).map((a) => (
-                    <span
-                      key={a.id}
-                      className="flex-1 h-full"
-                      style={{ backgroundColor: a.color, opacity: 0.32 }}
-                    />
-                  ))}
-                </span>
-              ) : null}
               <span
-                className="relative z-10 text-sm num rounded-full px-1.5"
+                className="text-xs num self-start rounded-full w-5 h-5 flex items-center justify-center"
                 style={{
-                  backgroundColor: isSelected
-                    ? "var(--c-accent-ring)"
-                    : "transparent",
+                  backgroundColor: isToday ? "var(--c-accent)" : "transparent",
+                  color: isToday ? "var(--c-on-accent)" : "var(--c-text)",
+                  fontWeight: isToday ? 700 : 400,
                 }}
               >
                 {day}
+              </span>
+              <span className="flex flex-col gap-0.5">
+                {occupiedApts.slice(0, 3).map((a) => (
+                  <span
+                    key={a.id}
+                    className="h-1.5 rounded-sm"
+                    style={{ backgroundColor: a.color }}
+                  />
+                ))}
+                {occupiedApts.length > 3 ? (
+                  <span className="text-[10px] text-muted leading-none">
+                    +{occupiedApts.length - 3}
+                  </span>
+                ) : null}
               </span>
             </button>
           );

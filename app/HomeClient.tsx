@@ -5,6 +5,7 @@ import { Plus, LogOut, CalendarX2 } from "lucide-react";
 import { signOut } from "./login/actions";
 import NewReservationSheet from "./NewReservationSheet";
 import MonthCalendar from "./MonthCalendar";
+import SummaryView from "./SummaryView";
 import type { Apartment } from "@/lib/apartments";
 
 export type Reservation = {
@@ -32,7 +33,9 @@ export default function HomeClient({
   apartments: Apartment[];
   reservations: Reservation[];
 }) {
-  const [view, setView] = useState<"calendar" | "agenda">("calendar");
+  const [view, setView] = useState<"calendar" | "agenda" | "summary">(
+    "calendar"
+  );
   const [selectedApartmentId, setSelectedApartmentId] = useState(
     apartments[0]?.id ?? ""
   );
@@ -129,6 +132,14 @@ export default function HomeClient({
           >
             Agenda
           </button>
+          <button
+            type="button"
+            className="segment"
+            aria-selected={view === "summary"}
+            onClick={() => setView("summary")}
+          >
+            Resumen
+          </button>
         </div>
 
         {view === "calendar" ? (
@@ -184,6 +195,8 @@ export default function HomeClient({
               </div>
             ) : null}
           </>
+        ) : view === "summary" ? (
+          <SummaryView apartments={apartments} reservations={reservations} />
         ) : (
           <>
             <div className="tabs" role="tablist">
