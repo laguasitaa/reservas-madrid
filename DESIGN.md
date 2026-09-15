@@ -35,7 +35,7 @@ de un mismo azul, pensadas para gráficas ordenadas):
 | --- | --- | --- | --- |
 | `--c-cat-yellow` | `#C9971C` | `#E4B94D` | COLON III (621) |
 | `--c-cat-blue` | `#1B62F0` | `#6FA0F5` | COLON IV (609) |
-| `--c-cat-red` | `#D6455B` | `#E8748A` | COLON V (1318) |
+| `--c-cat-red` | `#DC2626` | `#F27272` | COLON V (1318) |
 | `--c-cat-purple` | `#7C3AED` | `#B794F6` | COLON VII (1214) |
 
 Solo para estas 4 categorías fijas. No usar para estados (usa
