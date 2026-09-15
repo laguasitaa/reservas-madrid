@@ -119,7 +119,7 @@ export default function MonthCalendar({
             return (
               <span
                 key={`empty-${i}`}
-                className="border-r border-b border-default bg-app min-h-14 sm:min-h-16"
+                className="border-r border-b border-default bg-app min-h-20 sm:min-h-28"
               />
             );
           }
@@ -137,7 +137,7 @@ export default function MonthCalendar({
               key={iso}
               type="button"
               onClick={() => onSelectDate(iso)}
-              className="relative flex flex-col items-stretch border-r border-b border-default min-h-16 sm:min-h-20 p-1 gap-0.5 text-left transition-colors"
+              className="relative flex flex-col items-stretch border-r border-b border-default min-h-20 sm:min-h-28 p-1 gap-1 text-left transition-colors"
               style={{
                 backgroundColor: isSelected
                   ? "var(--c-accent-ring)"
@@ -145,7 +145,7 @@ export default function MonthCalendar({
               }}
             >
               <span
-                className="text-xs num self-start rounded-full w-5 h-5 flex items-center justify-center"
+                className="text-sm num self-start rounded-full w-6 h-6 flex items-center justify-center"
                 style={{
                   backgroundColor: isToday ? "var(--c-accent)" : "transparent",
                   color: isToday ? "var(--c-on-accent)" : "var(--c-text)",
@@ -154,11 +154,11 @@ export default function MonthCalendar({
               >
                 {day}
               </span>
-              <span className="flex flex-col gap-0.5">
-                {dayReservations.slice(0, 3).map((r) => (
+              <span className="flex flex-col gap-1">
+                {dayReservations.slice(0, 2).map((r) => (
                   <span
                     key={r.id}
-                    className="rounded-sm px-0.5 leading-tight text-[9px] font-medium truncate"
+                    className="rounded px-1 py-0.5 leading-tight text-[11px] sm:text-xs font-semibold truncate"
                     style={{
                       backgroundColor: r.apartment!.color,
                       color: "var(--c-on-accent)",
@@ -167,9 +167,9 @@ export default function MonthCalendar({
                     {r.guest_name ?? r.apartment!.name}
                   </span>
                 ))}
-                {dayReservations.length > 3 ? (
-                  <span className="text-[9px] text-muted leading-none">
-                    +{dayReservations.length - 3}
+                {dayReservations.length > 2 ? (
+                  <span className="text-[10px] text-muted leading-none">
+                    +{dayReservations.length - 2}
                   </span>
                 ) : null}
               </span>

@@ -6,6 +6,7 @@ import { signOut } from "./login/actions";
 import NewReservationSheet from "./NewReservationSheet";
 import MonthCalendar from "./MonthCalendar";
 import SummaryView from "./SummaryView";
+import SpainFlag from "./SpainFlag";
 import type { Apartment } from "@/lib/apartments";
 import { nightsBetween, pricePerNight } from "@/lib/nights";
 
@@ -113,6 +114,7 @@ export default function HomeClient({
   return (
     <div className="app-shell has-bottom-nav">
       <header className="app-header">
+        <SpainFlag className="w-5 h-auto flex-none" />
         <h1 className="font-display text-base flex-1">Reservas Madrid</h1>
         <form action={signOut}>
           <button
