@@ -10,6 +10,11 @@ import {
 } from "./reservations/actions";
 import type { Apartment } from "@/lib/apartments";
 import type { Reservation } from "./HomeClient";
+import { nightsBetween, pricePerNight } from "@/lib/nights";
+
+function formatAmount(n: number) {
+  return n.toLocaleString("es-ES", { style: "currency", currency: "EUR" });
+}
 
 const initialState: ReservationState = { error: null };
 
@@ -32,6 +37,18 @@ export default function NewReservationSheet({
   const [apartmentId, setApartmentId] = useState(
     editing?.apartment_id ?? defaultApartmentId ?? apartments[0]?.id ?? ""
   );
+  const [startDate, setStartDate] = useState(
+    editing?.start_date ?? defaultDate ?? ""
+  );
+  const [endDate, setEndDate] = useState(editing?.end_date ?? "");
+  const [amount, setAmount] = useState(editing?.amount?.toString() ?? "");
+
+  const nights = startDate && endDate ? nightsBetween(startDate, endDate) : 0;
+  const amountNum = amount.trim() === "" ? null : Number(amount);
+  const perNight =
+    amountNum != null && !Number.isNaN(amountNum)
+      ? pricePerNight(amountNum, nights)
+      : null;
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [deleteState, deleteAction, deletePending] = useActionState(
     deleteReservation,
@@ -119,7 +136,8 @@ export default function NewReservationSheet({
                 name="start_date"
                 type="date"
                 required
-                defaultValue={editing?.start_date ?? defaultDate ?? undefined}
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
                 className="input-default"
               />
             </div>
@@ -132,7 +150,8 @@ export default function NewReservationSheet({
                 name="end_date"
                 type="date"
                 required
-                defaultValue={editing?.end_date ?? undefined}
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
                 className="input-default"
               />
             </div>
@@ -149,10 +168,19 @@ export default function NewReservationSheet({
               step="0.01"
               min="0"
               inputMode="decimal"
-              defaultValue={editing?.amount ?? ""}
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
               className="input-default"
               placeholder="0.00"
             />
+            {startDate && endDate ? (
+              <p className="help-text">
+                {nights} {nights === 1 ? "noche" : "noches"}
+                {perNight != null
+                  ? ` · ${formatAmount(perNight)}/noche`
+                  : ""}
+              </p>
+            ) : null}
           </div>
 
           {state.error ? <p className="error-text">{state.error}</p> : null}

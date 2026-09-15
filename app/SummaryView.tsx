@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import type { Apartment } from "@/lib/apartments";
 import type { Reservation } from "./HomeClient";
+import { nightsBetween, pricePerNight } from "@/lib/nights";
 
 function formatDate(iso: string) {
   const [y, m, d] = iso.split("-");
@@ -11,6 +12,15 @@ function formatDate(iso: string) {
 
 function formatAmount(n: number) {
   return n.toLocaleString("es-ES", { style: "currency", currency: "EUR" });
+}
+
+function stayMeta(r: Reservation) {
+  const nights = nightsBetween(r.start_date, r.end_date);
+  const perNight = pricePerNight(r.amount, nights);
+  const nightsLabel = `${nights} ${nights === 1 ? "noche" : "noches"}`;
+  const perNightLabel =
+    perNight != null ? ` · ${formatAmount(perNight)}/noche` : "";
+  return `${nightsLabel}${perNightLabel}`;
 }
 
 export default function SummaryView({
@@ -98,6 +108,8 @@ export default function SummaryView({
                   </span>
                   <span className="list-row-meta">
                     {formatDate(r.start_date)} — {formatDate(r.end_date)}
+                    {" · "}
+                    {stayMeta(r)}
                   </span>
                 </div>
                 <span className="num text-sm">

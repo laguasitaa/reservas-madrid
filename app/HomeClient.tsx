@@ -7,6 +7,7 @@ import NewReservationSheet from "./NewReservationSheet";
 import MonthCalendar from "./MonthCalendar";
 import SummaryView from "./SummaryView";
 import type { Apartment } from "@/lib/apartments";
+import { nightsBetween, pricePerNight } from "@/lib/nights";
 
 export type Reservation = {
   id: string;
@@ -24,6 +25,15 @@ function formatDate(iso: string) {
 
 function formatAmount(n: number) {
   return n.toLocaleString("es-ES", { style: "currency", currency: "EUR" });
+}
+
+function stayMeta(r: Reservation) {
+  const nights = nightsBetween(r.start_date, r.end_date);
+  const perNight = pricePerNight(r.amount, nights);
+  const nightsLabel = `${nights} ${nights === 1 ? "noche" : "noches"}`;
+  const perNightLabel =
+    perNight != null ? ` · ${formatAmount(perNight)}/noche` : "";
+  return `${nightsLabel}${perNightLabel}`;
 }
 
 export default function HomeClient({
@@ -191,6 +201,8 @@ export default function HomeClient({
                         </span>
                         <span className="list-row-meta">
                           {formatDate(r.start_date)} — {formatDate(r.end_date)}
+                          {" · "}
+                          {stayMeta(r)}
                           {r.amount != null
                             ? ` · ${formatAmount(r.amount)}`
                             : ""}
@@ -266,6 +278,7 @@ export default function HomeClient({
                         {r.guest_name ? ` — ${r.guest_name}` : ""}
                       </span>
                       <span className="list-row-meta">
+                        {stayMeta(r)} ·{" "}
                         {r.amount != null ? formatAmount(r.amount) : "Sin monto"}
                       </span>
                     </div>
