@@ -39,7 +39,12 @@ function reservationsOnDate(
       ...r,
       apartment: apartments.find((a) => a.id === r.apartment_id),
     }))
-    .filter((r) => r.apartment);
+    .filter((r) => r.apartment)
+    .sort(
+      (a, b) =>
+        apartments.findIndex((x) => x.id === a.apartment_id) -
+        apartments.findIndex((x) => x.id === b.apartment_id)
+    );
 }
 
 export default function MonthCalendar({
@@ -119,7 +124,7 @@ export default function MonthCalendar({
             return (
               <span
                 key={`empty-${i}`}
-                className="border-r border-b border-default bg-app min-h-20 sm:min-h-28"
+                className="border-r border-b border-default bg-app min-h-24 sm:min-h-36"
               />
             );
           }
@@ -137,7 +142,7 @@ export default function MonthCalendar({
               key={iso}
               type="button"
               onClick={() => onSelectDate(iso)}
-              className="relative flex flex-col items-stretch border-r border-b border-default min-h-20 sm:min-h-28 p-1 gap-1 text-left transition-colors"
+              className="relative flex flex-col items-stretch border-r border-b border-default min-h-24 sm:min-h-36 p-1 gap-1 text-left transition-colors"
               style={{
                 backgroundColor: isSelected
                   ? "var(--c-accent-ring)"
@@ -155,7 +160,7 @@ export default function MonthCalendar({
                 {day}
               </span>
               <span className="flex flex-col gap-1">
-                {dayReservations.slice(0, 2).map((r) => (
+                {dayReservations.map((r) => (
                   <span
                     key={r.id}
                     className="rounded px-1 py-0.5 leading-tight text-[11px] sm:text-xs font-semibold truncate"
@@ -167,11 +172,6 @@ export default function MonthCalendar({
                     {r.guest_name ?? r.apartment!.name}
                   </span>
                 ))}
-                {dayReservations.length > 2 ? (
-                  <span className="text-[10px] text-muted leading-none">
-                    +{dayReservations.length - 2}
-                  </span>
-                ) : null}
               </span>
             </button>
           );
