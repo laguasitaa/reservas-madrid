@@ -26,6 +26,37 @@ Google Calendar
 ## MVP (punto de partida)
 Vista de calendario por apartamento que bloquee fechas ya reservadas e impida doble-reserva
 
+## Alcance actualizado (tras planning — /office-hours, /plan-ceo-review, /plan-design-review, /plan-eng-review)
+
+Doc de diseño completo: `~/.gstack/projects/reservas-madrid/gabrielam-main-design-20260915-090442.md`
+
+- **Precios y ganancias (agregado):** cada reserva guarda un monto total
+  (captura manual, sin tarifa automática). Vista de resumen de ganancias
+  por apartamento y por periodo (mes/año). No incluye gastos, comisiones,
+  ni reportes fiscales en esta fase.
+- **Color fijo por apartamento** en toda la UI (badges, agenda, calendario)
+  para reconocerlos de un vistazo.
+- **Filtro de agenda** por apartamento y por rango de fechas.
+- **Diferido (no en el MVP):** datos de contacto de huéspedes, exportar a
+  Excel/CSV, recordatorios automáticos antes de la llegada (este último
+  depende de tener correo conectado con dominio propio — no tiene caso
+  antes de eso).
+- **Vista principal:** agenda/lista mobile-first (no cuadrícula de mes) con
+  un toggle a vista de calendario mensual. Formulario de nueva reserva en
+  hoja que sube desde abajo (bottom sheet). El selector de fechas bloquea
+  visualmente los días ya ocupados — imposible tocarlos, no solo un
+  mensaje de error al guardar.
+- **Modelo de usuarios:** una sola cuenta (el dueño) con acceso a los 4
+  apartamentos — sin tabla de permisos multi-dueño en esta fase.
+- **Bloqueo de fechas cruzadas — regla de base de datos, no solo de la
+  app:** restricción `EXCLUDE` de Postgres (extensión `btree_gist`) sobre
+  `(apartment_id, daterange(start_date, end_date))`. La base de datos
+  rechaza el INSERT/UPDATE si hay cruce, sin depender de que el código de
+  la app lo valide correctamente.
+- **Modelo de datos:** tablas `apartments` (id, name, color) y
+  `reservations` (id, apartment_id, start_date, end_date, amount,
+  created_at).
+
 ## Guarda información
 Sí — usamos Supabase
 
