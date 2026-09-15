@@ -3,6 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { getOrSeedApartments } from "@/lib/apartments";
 import HomeClient from "./HomeClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const supabase = await createClient();
 

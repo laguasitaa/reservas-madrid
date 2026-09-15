@@ -1,10 +1,10 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 const DEFAULT_APARTMENTS = [
-  { name: "COLON III (621)", color: "var(--c-series-1)" },
-  { name: "COLON IV (609)", color: "var(--c-series-2)" },
-  { name: "COLON V (1318)", color: "var(--c-series-3)" },
-  { name: "COLON VII (1214)", color: "var(--c-series-4)" },
+  { name: "COLON III (621)", color: "var(--c-cat-yellow)" },
+  { name: "COLON IV (609)", color: "var(--c-cat-blue)" },
+  { name: "COLON V (1318)", color: "var(--c-cat-red)" },
+  { name: "COLON VII (1214)", color: "var(--c-cat-purple)" },
 ];
 
 export type Apartment = {

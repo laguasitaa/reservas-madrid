@@ -23,6 +23,23 @@ Un solo acento protagonista + neutros + semánticos. Nunca inventar colores nuev
 | error / bg | `#A93226` / `#F9E7E5` | `#EC8175` / `#301714` |
 
 Todos los pares texto/fondo cumplen WCAG AA (>=4.5:1 en texto normal).
+
+### Colores de categoría (agregado — reservas-madrid)
+
+Para diferenciar los 4 apartamentos de un vistazo (no son datos serie/orden,
+son categorías sin relación entre sí), se agregaron 4 tokens de categoría con
+tonos distintos entre sí — a diferencia de `--c-series-*` (que son variaciones
+de un mismo azul, pensadas para gráficas ordenadas):
+
+| token | claro | oscuro | uso |
+| --- | --- | --- | --- |
+| `--c-cat-yellow` | `#C9971C` | `#E4B94D` | COLON III (621) |
+| `--c-cat-blue` | `#1B62F0` | `#6FA0F5` | COLON IV (609) |
+| `--c-cat-red` | `#D6455B` | `#E8748A` | COLON V (1318) |
+| `--c-cat-purple` | `#7C3AED` | `#B794F6` | COLON VII (1214) |
+
+Solo para estas 4 categorías fijas. No usar para estados (usa
+success/warning/error) ni agregar más sin repetir este proceso.
 Usar `--c-*` vía las utilidades (`bg-app`, `text-muted`, `btn-primary`…), no hex sueltos.
 
 ## Tipografía (next/font/google)

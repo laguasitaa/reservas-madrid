@@ -175,6 +175,10 @@
   --c-series-2: #4A7BAE;
   --c-series-3: #86A9CE;
   --c-series-4: #12345A;
+  --c-cat-yellow: #C9971C;
+  --c-cat-blue: #1B62F0;
+  --c-cat-red: #D6455B;
+  --c-cat-purple: #7C3AED;
   --c-bg: #F6F8FA;
   --c-surface: #FFFFFF;
   --c-border: #DCE2E9;
@@ -202,6 +206,10 @@
   --c-series-2: #4E80B5;
   --c-series-3: #A6C8EE;
   --c-series-4: #2F5A80;
+  --c-cat-yellow: #E4B94D;
+  --c-cat-blue: #6FA0F5;
+  --c-cat-red: #E8748A;
+  --c-cat-purple: #B794F6;
   --c-bg: #0E141B;
   --c-surface: #172029;
   --c-border: #26313D;
